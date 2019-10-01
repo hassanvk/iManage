@@ -1,7 +1,10 @@
 package com.hassan.iManage;
 
+import static spark.Spark.*;
+
 public class main {
     public static void main(String[] args){
-        System.out.println("test");
+        get("/hello",(req,res) -> "Hello World");
+
     }
 }
