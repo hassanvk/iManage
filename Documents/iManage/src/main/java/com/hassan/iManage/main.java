@@ -1,7 +1,7 @@
 package com.hassan.iManage;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import static com.hassan.iManage.Time.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,33 +13,31 @@ public class main {
 
 
         Map<Integer,Data> dataMap = Database.getInstance();
+        Gson gson = new Gson();
 
-        //Hello World
         get("/hello",(req,res) -> "Hello World");
 
-        //Hello + your name
-        get("/hello/:name", (request, response) -> {
-            return "Hello: " + request.params(":name");
-        });
+        get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
 
-        //Get message of id from datamap
         get("/get/messages/:id", (request, response) -> {
             Data data = dataMap.get(Integer.valueOf(request.params(":id")));
             if(data == null) {
                 response.status(404);
+                System.out.println(getZonedTime() + ": Message for ID: "
+                        + request.params(":id") + " doesn't exist");
                 return response.body();
             }
-            System.out.println(new Gson().toJson(data));
-            return new Gson().toJson(data);
+            System.out.println(getZonedTime() + ": Message found. Retrieving: " + gson.toJson(data));
+            return gson.toJson(data);
         });
 
-        //Add new data to datamap
         post("/post/messages", (request, response) -> {
             response.type("application/json");
-            Data data = new Gson().fromJson(request.body(), Data.class);
+            Data data = gson.fromJson(request.body(), Data.class);
             dataMap.put(data.getId(),data);
             response.status(200);
-            return  new Gson().toJson(dataMap.get(data.getId()));
+            System.out.println(getZonedTime() + ": Message added to database: " + gson.toJson(data));
+            return gson.toJson(dataMap.get(data.getId()));
         });
     }
 }
