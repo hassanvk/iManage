@@ -1,10 +1,20 @@
 package com.hassan.iManage;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Data")
 public class Data {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID")
     private int id;
+    @Column(name = "Text")
     private String text;
+    @Column(name = "From")
     private String from;
+    @Column(name = "To")
     private String to;
 
     public Data(int id, String text, String from, String to){

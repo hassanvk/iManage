@@ -3,6 +3,7 @@ package com.hassan.iManage;
 import com.google.gson.Gson;
 import static com.hassan.iManage.Time.*;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,5 +40,15 @@ public class main {
             System.out.println(getZonedTime() + ": Message added to database: " + gson.toJson(data));
             return gson.toJson(dataMap.get(data.getId()));
         });
+    }
+
+    public static void testConnection(){
+        JDBCConnection jdbcConnection = new JDBCConnection();
+        Connection connection = jdbcConnection.ConnectToDataBase(
+                "com.mysql.cj.jdbc.Driver",
+                "jdbc:mysql://prod-dc-tpi.ckrolx9eakpe.us-east-1.rds.amazonaws.com",
+                "username",
+                "password"
+        );
     }
 }

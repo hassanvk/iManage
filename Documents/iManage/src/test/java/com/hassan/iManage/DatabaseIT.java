@@ -9,6 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import java.util.function.Consumer;
 
 import com.google.gson.Gson;
 import org.junit.Before;
@@ -16,6 +21,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 
 import static org.junit.Assert.assertNotNull;
@@ -23,6 +30,20 @@ import static org.junit.Assert.assertNotNull;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DatabaseIT {
+
+    private static EntityManagerFactory emf;
+    private static Integer eint;
+
+    @BeforeClass
+    public static void beforeClass(){
+        //emf = Persistence.createEntityManagerFactory("FailSafeDocker");
+        System.out.println("Before Class");
+    }
+
+    @AfterClass
+    public static void afterClass(){
+        System.out.println("After Class");
+    }
 
     @Test
     public void getMessage101(){
@@ -199,7 +220,7 @@ public class DatabaseIT {
     public void postMessage110ACheck(){
 
         try {
-            TimeUnit.SECONDS.sleep(15);
+            TimeUnit.SECONDS.sleep(0);
             URL url = new URL("http://hassanvkmm.us-east-1.elasticbeanstalk.com/get/messages/110");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
@@ -227,70 +248,70 @@ public class DatabaseIT {
         }
     }
 
-    @Test
-    public void postMessage110B(){
-        try {
-            URL url = new URL("http://hassanvkmm.us-east-1.elasticbeanstalk.com/post/messages");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            Gson gson = new Gson();
-            con.setRequestMethod("POST");
-            con.setDoOutput(true);
-            con.setRequestProperty("Content-Type","application/json");
-            OutputStream os = con.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os,"UTF-8");
-            Data data = new Data(110,"null", "null", "null");
-            osw.write(gson.toJson(data));
-            osw.flush();
-            osw.close();
-            os.close();
-            con.connect();
-
-            int status = con.getResponseCode();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-            while((inputLine = in.readLine()) != null){
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
-            System.out.println(content.toString());
-            Data dataResponse = gson.fromJson(content.toString(), Data.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void postMessage110BCheck(){
-
-        try {
-            TimeUnit.SECONDS.sleep(15);
-            URL url = new URL("http://hassanvkmm.us-east-1.elasticbeanstalk.com/get/messages/110");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-
-            int status = con.getResponseCode();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-            while((inputLine = in.readLine()) != null){
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
-            System.out.println(content.toString());
-            Gson gson = new Gson();
-            Data data = gson.fromJson(content.toString(), Data.class);
-            assertEquals(110,data.getId());
-            assertEquals("null",data.getText());
-            assertEquals("null",data.getFrom());
-            assertEquals("null",data.getTo());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void postMessage110B(){
+//        try {
+//            URL url = new URL("http://hassanvkmm.us-east-1.elasticbeanstalk.com/post/messages");
+//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//            Gson gson = new Gson();
+//            con.setRequestMethod("POST");
+//            con.setDoOutput(true);
+//            con.setRequestProperty("Content-Type","application/json");
+//            OutputStream os = con.getOutputStream();
+//            OutputStreamWriter osw = new OutputStreamWriter(os,"UTF-8");
+//            Data data = new Data(110,"null", "null", "null");
+//            osw.write(gson.toJson(data));
+//            osw.flush();
+//            osw.close();
+//            os.close();
+//            con.connect();
+//
+//            int status = con.getResponseCode();
+//            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//            String inputLine;
+//            StringBuffer content = new StringBuffer();
+//            while((inputLine = in.readLine()) != null){
+//                content.append(inputLine);
+//            }
+//            in.close();
+//            con.disconnect();
+//            System.out.println(content.toString());
+//            Data dataResponse = gson.fromJson(content.toString(), Data.class);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @Test
+//    public void postMessage110BCheck(){
+//
+//        try {
+//            TimeUnit.SECONDS.sleep(0);
+//            URL url = new URL("http://hassanvkmm.us-east-1.elasticbeanstalk.com/get/messages/110");
+//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//            con.setRequestMethod("GET");
+//
+//            int status = con.getResponseCode();
+//            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//            String inputLine;
+//            StringBuffer content = new StringBuffer();
+//            while((inputLine = in.readLine()) != null){
+//                content.append(inputLine);
+//            }
+//            in.close();
+//            con.disconnect();
+//            System.out.println(content.toString());
+//            Gson gson = new Gson();
+//            Data data = gson.fromJson(content.toString(), Data.class);
+//            assertEquals(110,data.getId());
+//            assertEquals("null",data.getText());
+//            assertEquals("null",data.getFrom());
+//            assertEquals("null",data.getTo());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

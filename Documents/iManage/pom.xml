@@ -65,6 +65,56 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.31.0</version>
+
+                <configuration>
+                    <images>
+                        <image>
+                            <name>PRE-INTEGRATION-NAME</name>
+                            <alias>PRE-INTEGRATION-ALIAS</alias>
+                            <build>
+                                <from>java:8</from>
+                                <assembly>
+                                    <descriptor>????.xml</descriptor>
+                                </assembly>
+                                <cmd>
+                                    <shell>java -cp /iManage-1.0-SNAPSHOT-jar-with-dependencies.jar com.hassan.iManage.main</shell>
+                                </cmd>
+                            </build>
+                            <!--<run>-->
+                            <!--<ports>-->
+                            <!--<port>it-database.port:5432</port>-->
+                            <!--</ports>-->
+                            <!--<wait>-->
+                            <!--<log>(?s)database system is ready to accept connections.*database system is ready to accept connections</log>-->
+                            <!--<time>10000</time>-->
+                            <!--</wait>-->
+                            <!--</run>-->
+                        </image>
+                    </images>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -109,7 +159,16 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>2.22.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.3.6.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.4</version>
+        </dependency>
     </dependencies>
 
 </project>
